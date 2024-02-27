@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include "questions.h"
 
 // holds all catagories
@@ -99,28 +100,42 @@ void display_categories(void) {
 void display_question(char *category, int value) {
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (strcmp(questions[i].category, category) == 0 && questions[i].value == value && !questions[i].answered) {
-            printf("The Question: %s\n", questions[i].question);
+            printf("\nThe Question: %s\n", questions[i].question);
             return;
         }
     }
     printf("The question has already been answered or is invalid!\n");
 }
 
+//function to remove white spaces 
+void remove_space(char *str) { 
+    //removes whitespaces in the front
+    while (*str && isspace(*str)) {
+        ++str;
+    }
+    
+    // Remove whitespace at the end
+    char *end = str + strlen(str) - 1;
+    while (end > str && isspace(*end)) {
+        *end-- = '\0';
+    }
+}
+
 // function to check if answer is right
 bool valid_answer(char *category, int value, char *answer) {
-    
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         // finds the matching question
-        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value) {
+        if (strcmp(questions[i].category,category)==0 && questions[i].value==value) {
             // if it matches return true, otherwise false
-            if (strcmp(questions[i].answer, answer) == 0){
+             remove_space(questions[i].answer);
+             remove_space(answer);
+            if (strcmp(questions[i].answer,answer) == 0){
             	questions[i].answered = true;
             	return true;
-            } else {
-            	return false;
-            }
+            } 
         }
     }
+    return false;
 }
 
 // function to check if teh question is already answered
