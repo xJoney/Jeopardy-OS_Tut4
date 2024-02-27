@@ -37,22 +37,34 @@ int main(int argc, char *argv[]) {
     for (int i = 0; i < NUM_PLAYERS; i++) {
         printf("Enter name for player %d: ", i + 1);
         fgets(buffer, BUFFER_LEN, stdin);
-        buffer[strcspn(buffer, "\n")] = 0; // Remove newline character
+        
+        // removes the newline character 
+        buffer[strcspn(buffer, "\n")] = 0;
         strcpy(players[i].name, buffer);
-        players[i].score = 0; // Initialize score
+        
+        // Initializes player's score
+        players[i].score = 0;
     }
 
+    // starts player turn counter
+    int counter = 0;
     // Main game loop
     while (true) {
         
         // starts with displaying all availible catagories
+        printf("-----------------------------\n");
         display_categories();
+        printf("-----------------------------\n");
 	
+	
+	int currentplayer = (counter % 4);
+	printf("It is currently %s's turn!", players[currentplayer].name);
 	// Takes the user input, if the user types quit, the game will end
         printf("\nEnter a category and value (or 'quit' to finish): ");
         if (fgets(buffer, BUFFER_LEN, stdin) == NULL || strncmp(buffer, "quit", 4) == 0) {
             break;
         }
+	
 	
 	// tokenizes the user's input
         tokenize(buffer, tokens);
@@ -71,6 +83,7 @@ int main(int argc, char *argv[]) {
 		// checks if the answer is correct or wrong
                 if (valid_answer(category, value, buffer)) {
                     printf("Correct!\n");
+                    players[currentplayer].score += value;
                 } else {
                     printf("Wrong answer.\n");
                 }
@@ -80,6 +93,7 @@ int main(int argc, char *argv[]) {
         } else {
             printf("Invalid input! Please try again.\n");
         }
+        counter = counter + 1;
     }
     // Display the final results and exit
     show_results(players, NUM_PLAYERS);
@@ -110,4 +124,3 @@ void show_results(player *players, int num_players) {
 		printf("%s: %d \n", players[i].name, players[i].score);
 	}
 }
-
