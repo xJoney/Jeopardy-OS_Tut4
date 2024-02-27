@@ -1,148 +1,132 @@
+/*
+ * Tutorial 4 Jeopardy Project for SOFE 3950U / CSCI 3020U: Operating Systems
+ *
+ * Copyright (C) 2015, <GROUP 15>
+ * All rights reserved.
+ *
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include "questions.h"
 
-#define MAX_CATEGORIES 3
-#define MAX_QUESTIONS 3
-#define MAX_CATEGORIES_LENGTH 100
-#define MAX_QUESTIONS_LENGTH 100
-#define MAX_ANSWERS_LENGTH 100
-
-struct QUESTION{
-    char category [MAX_CATEGORIES_LENGTH];
-    char question [MAX_ANSWERS_LENGTH];
-    char answer [MAX_ANSWERS_LENGTH];
-    int value;
-    bool answered; 
+// holds all catagories
+char categories[NUM_CATEGORIES][MAX_LEN] = {
+    "General", 
+    "Tv", 
+    "Nature"
 };
-struct Question questions[MAX_CATEGORIES][MAX_CATEGORIES];
-// initializes the array of questions for the game
+
+// struct for questions
+question questions[NUM_QUESTIONS];
+
+// initialization of questions
 void initialize_game(void) {
-    // General category 
-    //c0q1
-    strcpy(question[1].category, "General");
-    strcpy(question[1].question, "What animal can be seen on the Porsche logo?");
-    strcpy(question[1].answer, "Horse");
-    question[1].value = 100;
-    question[1].answered = false;
-    //c1q2
-    strcpy(question[2].category, "General");
-    strcpy(question[2].question, "Peter Parker is the superhero of which movie?");
-    strcpy(question[2].answer, "Spiderman");
-    question[2].value = 300;
-    question[2].answered = false;
-    //c1q3
-    strcpy(question[3].category, "General");
-    strcpy(question[3].question, "What is Thor the God of?");
-    strcpy(question[3].answer, "Thunder");
-    question[3].value = 500;
-    question[3].answered = false;
+    // General category
+    strcpy(questions[0].category, categories[0]);
+    strcpy(questions[0].question, "What animal can be seen on the Porsche logo?");
+    strcpy(questions[0].answer, "Horse");
+    questions[0].value = 100;
+    questions[0].answered = false;
 
-    //Tv shows category 
-    //c1q1
-    strcpy(question[4].category, "TV Shows");
-    strcpy(question[4].question, "Which TV show follows the lives of Rachel, Moinca, Phoebe, Ross, Chandler, and Joey?");
-    strcpy(question[4].answer, "Friends");
-    question[4].value = 100;
-    question[4].answered = false;
+    strcpy(questions[1].category, categories[0]);
+    strcpy(questions[1].question, "Peter Parker is the superhero of which movie?");
+    strcpy(questions[1].answer, "Spiderman");
+    questions[1].value = 200;
+    questions[1].answered = false;
 
-    //c1q2
-    strcpy(question[5].category, "TV Shows");
-    strcpy(question[5].question, "What city does Spongebob live in?");
-    strcpy(question[5].answer, "Bikini Bottom");
-    question[5].value = 300;
-    question[5].answered = false;
+    strcpy(questions[2].category, categories[0]);
+    strcpy(questions[2].question, "What is Thor the God of?");
+    strcpy(questions[2].answer, "Thunder");
+    questions[2].value = 300;
+    questions[2].answered = false;
 
-    //c1q3
-    strcpy(question[6].category, "TV Shows");
-    strcpy(question[6].question, "What is Phineas and Ferb’s pet platypus named?");
-    strcpy(question[6].answer, "Perry");
-    question[6].value = 500;
-    question[6].answered = false;
+    // TV Shows category
+    strcpy(questions[3].category, categories[1]);
+    strcpy(questions[3].question, "Which TV show follows the lives of Rachel, Monica, Phoebe, Ross, Chandler, and Joey?");
+    strcpy(questions[3].answer, "Friends");
+    questions[3].value = 100;
+    questions[3].answered = false;
 
+    strcpy(questions[4].category, categories[1]);
+    strcpy(questions[4].question, "What city does Spongebob Squarepants live in?");
+    strcpy(questions[4].answer, "Bikini Bottom");
+    questions[4].value = 200;
+    questions[4].answered = false;
 
-    //nature category
-    //c2q1
-    strcpy(question[7].category, "TV Shows");
-    strcpy(question[7].question, "What is the process of converting sunlight into energy for plants?");
-    strcpy(question[7].answer, "Photosynthesis");
-    question[7].value = 100;
-    question[7].answered = false;
-    //c2q2
-    strcpy(question[8].category, "TV Shows");
-    strcpy(question[8].question, "What is the fastest running bird currently alive?");
-    strcpy(question[8].answer, "Ostrich");
-    question[8].value = 300;
-    question[8].answered = false;
-    //c2q3
-    strcpy(question[9].category, "TV Shows");
-    strcpy(question[9].question, "What animal is known as ‘King of the Jungle’?");
-    strcpy(question[9].answer, "Lion");
-    question[9].value = 500;
-    question[9].answered = false;
+    strcpy(questions[5].category, categories[1]);
+    strcpy(questions[5].question, "What is Phineas and Ferb’s pet platypus named?");
+    strcpy(questions[5].answer, "Perry");
+    questions[5].value = 300;
+    questions[5].answered = false;
+
+    // Nature category
+    strcpy(questions[6].category, categories[2]);
+    strcpy(questions[6].question, "What is the process of converting sunlight into energy called in plants?");
+    strcpy(questions[6].answer, "Photosynthesis");
+    questions[6].value = 100;
+    questions[6].answered = false;
+
+    strcpy(questions[7].category, categories[2]);
+    strcpy(questions[7].question, "What is the fastest running bird on land?");
+    strcpy(questions[7].answer, "Ostrich");
+    questions[7].value = 200;
+    questions[7].answered = false;
+
+    strcpy(questions[8].category, categories[2]);
+    strcpy(questions[8].question, "What animal is known as the ‘King of the Jungle’?");
+    strcpy(questions[8].answer, "Lion");
+    questions[8].value = 300;
+    questions[8].answered = false;
 }
 
+// function to display catagories that hasn't been answered yet
+void display_categories(void) {
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        if (questions[i].answered == false) {
+            printf("%s - $%d\n", questions[i].category, questions[i].value);
+        }
+    }
+}
 
-// Displays each of the remaining categories and question dollar values that have not been answered
-void display_categories(void)
-{
-        for (int i =0; i < MAX_CATEGORIES; i++){
-            for (int j =0; j < MAX_QUESTIONS; j++){
-                //questions that haven't been answered
-                if (question[i][j].answer){
-                    printf("%s: $%d\n", question[i][j].category, question[i][j].value);
-                   
-                }
+// function to displays the question selected
+void display_question(char *category, int value) {
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value && !questions[i].answered) {
+            printf("The Question: %s\n", questions[i].question);
+            return;
+        }
+    }
+    printf("The question has already been answered or is invalid!\n");
+}
 
+// function to check if answer is right
+bool valid_answer(char *category, int value, char *answer) {
+    
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        // finds the matching question
+        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value) {
+            // if it matches return true, otherwise false
+            if (strcmp(questions[i].answer, answer) == 0){
+            	questions[i].answered = true;
+            	return true;
+            } else {
+            	return false;
             }
         }
+    }
 }
 
-// Displays the question for the category and dollar value
-void display_question(char *category, int value)
-{
-//loops category 
-     for (int i= 0; i < MAX_CATEGORIES; i++) {
-        //loops question
-        for (int j = 0; j< MAX_QUESTIONS; j++) {
-            //question is checked with cateogry 
-            if (strcmp(question[i][j].category, category) == 0 && question[i][j].value == value && question[i][j].answer) {
-
-                printf("Question: %s\n", question[i][j].question);
-                return;
-}
-
-// Returns true if the answer is correct for the question for that category and dollar value
-bool valid_answer(char *category, int value, char *answer)
-{
-    for (int i = 0; i < MAX_CATEGORIES; i++) {
-        for (int j = 0; j < MAX_QUESTIONS; j++) {
-
-            //checks if the the question in the category matches the string input 
-            if (strcmp(question[i][j].category, category) == 0 && question[i][j].value == value && question[i][j].answer) {
-
-                    //if it matches 
-                if (strcmp(question[i][j].answer, answer) == 0) {
-                    question[i][j].answered = true;
-                    printf("Correct!\n");
-                    return true;
-
-                } else {
-                    //if it doesn't 
-                    printf("Incorrect.\n");
-                    return false;
-                }
-            }
+// function to check if teh question is already answered
+bool already_answered(char *category, int value) {
+    // finds the mathcing question and checks if its answer field is true
+    for (int i = 0; i < NUM_QUESTIONS; i++) {
+        if (strcmp(questions[i].category, category) == 0 && questions[i].value == value && questions[i].answered) {
+            return true;
         }
-    }    
+    }
+    return false;
 }
 
-// Returns true if the question has already been answered
-bool already_answered(char *category, int value)
-{
-    for (int i = 0; i < MAX_CATEGORIES; i++) {
-        for (int j = 0; j < MAX_QUESTIONS; j++) {
-            if (strcmp(question[i][j].category, category) == 0 && question[i][j].value == value && question[i][j].answer) {
-                return true;
-}
