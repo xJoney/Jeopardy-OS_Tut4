@@ -86,7 +86,11 @@ void initialize_game(void) {
 void display_categories(void) {
     for (int i = 0; i < NUM_QUESTIONS; i++) {
         if (questions[i].answered == false) {
-            printf("%s - $%d\n", questions[i].category, questions[i].value);
+            if(strcmp(questions[i].category, "Tv")){
+            	printf("%s - $%d\n", questions[i].category, questions[i].value);
+            } else {
+            printf("%s      - $%d\n", questions[i].category, questions[i].value);
+            }
         }
     }
 }
@@ -129,4 +133,3 @@ bool already_answered(char *category, int value) {
     }
     return false;
 }
-
